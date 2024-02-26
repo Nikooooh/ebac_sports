@@ -1,43 +1,45 @@
-import { Produto as ProdutoType } from '../../App'
+import React from 'react';
+import { Produto } from '../Slices/carrinhoSlice';
 import * as S from './styles'
-
 type Props = {
-  produto: ProdutoType
-  aoComprar: (produto: ProdutoType) => void
-  favoritar: (produto: ProdutoType) => void
-  estaNosFavoritos: boolean
-}
+  produto: Produto;
+  estaNosFavoritos: boolean;
+  favoritar: (produto: Produto) => void;
+  aoComprar: (produto: Produto) => void;
+  removerFavorito: (produto: Produto) => void;
+  removerDoCarrinho: (produtoId: number) => void;
+};
 
-export const paraReal = (valor: number) =>
-  new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(
-    valor
-  )
-
-const ProdutoComponent = ({
+const ProdutoComponent: React.FC<Props> = ({
   produto,
-  aoComprar,
+  estaNosFavoritos,
   favoritar,
-  estaNosFavoritos
-}: Props) => {
+  aoComprar,
+  removerFavorito,
+  removerDoCarrinho,
+}) => {
   return (
     <S.Produto>
       <S.Capa>
-        <img src={produto.imagem} alt={produto.nome} />
+      <img src={produto.imagem} alt={produto.nome} />
       </S.Capa>
       <S.Titulo>{produto.nome}</S.Titulo>
       <S.Prices>
-        <strong>{paraReal(produto.preco)}</strong>
+        <strong>{(produto.preco)}</strong>
       </S.Prices>
       <S.BtnComprar onClick={() => favoritar(produto)} type="button">
         {estaNosFavoritos
           ? '- Remover dos favoritos'
-          : '+ Adicionar aos favoritos'}
-      </S.BtnComprar>
-      <S.BtnComprar onClick={() => aoComprar(produto)} type="button">
+          : '+ Adicionar aos favoritos'}</S.BtnComprar>
+     <S.BtnComprar onClick={() => aoComprar(produto)} type="button">
         Adicionar ao carrinho
       </S.BtnComprar>
+      <S.BtnComprar onClick={() => removerFavorito(produto)}>Remover Favorito</S.BtnComprar>
+      <S.BtnComprar onClick={() => removerDoCarrinho(produto.id)}>Remover do Carrinho</S.BtnComprar>
     </S.Produto>
-  )
-}
+  
+    
+  );
+};
 
-export default ProdutoComponent
+export default ProdutoComponent;

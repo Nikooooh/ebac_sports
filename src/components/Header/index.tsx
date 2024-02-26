@@ -1,33 +1,32 @@
-import * as S from './styles'
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { RootState } from '../store';
+import styled from 'styled-components';
+import { Header as HeaderComponent } from './styles';
 
-import { Produto } from '../../App'
+import cesta from '../../assets/cesta.png';
+interface Produto {
+  id: number;
+  nome: string;
+  preco: number;
 
-import cesta from '../../assets/cesta.png'
-import { paraReal } from '../Produto'
-
-type Props = {
-  itensNoCarrinho: Produto[]
-  favoritos: Produto[]
+}
+interface HeaderProps {
+  favoritos: Produto[]; 
 }
 
-const Header = ({ itensNoCarrinho, favoritos }: Props) => {
-  const valorTotal = itensNoCarrinho.reduce((acc, item) => {
-    acc += item.preco
-    return acc
-  }, 0)
+const Header: React.FC<HeaderProps> = ({ favoritos }) => { 
+  const carrinho = useSelector((state: RootState) => state.carrinho.itens);
 
   return (
-    <S.Header>
-      <h1>EBAC Sports</h1>
+    <HeaderComponent>
       <div>
-        <span>{favoritos.length} favoritos</span>
-        <img src={cesta} />
-        <span>
-          {itensNoCarrinho.length} itens, valor total: {paraReal(valorTotal)}
-        </span>
+        <span>{favoritos.length} favoritos</span> 
+        <img src={cesta} alt="Carrinho" />
+        <span>{carrinho.length}</span>
       </div>
-    </S.Header>
-  )
-}
+    </HeaderComponent>
+  );
+};
 
-export default Header
+export default Header;

@@ -1,43 +1,51 @@
-import { Produto as ProdutoType } from '../App'
-import Produto from '../components/Produto'
+import React from 'react';
+import { Produto } from '../components/Slices/carrinhoSlice'; 
+import * as S from './styles'; 
 
-import * as S from './styles'
-
-type Props = {
-  produtos: ProdutoType[]
-  favoritos: ProdutoType[]
-  adicionarAoCarrinho: (produto: ProdutoType) => void
-  favoritar: (produto: ProdutoType) => void
+interface ProdutosProps {
+  produtos: Produto[];
+  carrinho: Produto[];
+  favoritos: Produto[];
+  adicionarAoCarrinho: (produto: Produto) => void;
+  removerDoCarrinho: (produtoId: number) => void; 
+  favoritar: (produto: Produto) => void;
+  removerFavorito: (produtoId: number) => void; 
 }
 
-const ProdutosComponent = ({
+const Produtos: React.FC<ProdutosProps> = ({
   produtos,
+  carrinho,
   favoritos,
   adicionarAoCarrinho,
-  favoritar
-}: Props) => {
-  const produtoEstaNosFavoritos = (produto: ProdutoType) => {
-    const produtoId = produto.id
-    const IdsDosFavoritos = favoritos.map((f) => f.id)
-
-    return IdsDosFavoritos.includes(produtoId)
-  }
-
+  removerDoCarrinho,
+  favoritar,
+  removerFavorito,
+}) => {
   return (
     <>
-      <S.Produtos>
-        {produtos.map((produto) => (
-          <Produto
-            estaNosFavoritos={produtoEstaNosFavoritos(produto)}
-            key={produto.id}
-            produto={produto}
-            favoritar={favoritar}
-            aoComprar={adicionarAoCarrinho}
-          />
-        ))}
-      </S.Produtos>
-    </>
-  )
-}
+     <S.Produtos> 
+      {produtos.map((produto, index) => (
+        <div key={produto.id}>
+          <h3>{produto.nome}</h3>
+          <p>Preço: {produto.preco}</p>
+          <S.ProdutoImagem src={produto.imagem} alt={produto.nome}/>
+          <S.Botao onClick={() => adicionarAoCarrinho(produto)}>Adicionar ao Carrinho</S.Botao>
+          <S.Botao onClick={() => favoritar(produto)}>Favoritar</S.Botao>
+      
+          {carrinho.find((item) => item.id === produto.id) && (
+            <S.Botao onClick={() => removerDoCarrinho(produto.id)}>Remover do Carrinho</S.Botao>
+          )}
+     
+          {favoritos.find((item) => item.id === produto.id) && (
+            <S.Botao onClick={() => removerFavorito(produto.id)}>Remover dos Favoritos</S.Botao>
+          )}
 
-export default ProdutosComponent
+          {(index + 1) % 3 === 0 && <br />} 
+        </div>
+      ))}
+   </S.Produtos>
+   </>
+  );
+};
+
+export default Produtos;
